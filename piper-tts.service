@@ -1,0 +1,12 @@
+[Unit]
+Description=Piper TTS Server
+After=default.target
+
+[Service]
+CPUQuota=100%
+ExecStart=__INSTALL_DIR__/venv/bin/python3 __INSTALL_DIR__/server.py __INSTALL_DIR__/voices/en_US-lessac-medium.onnx
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

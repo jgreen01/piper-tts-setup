@@ -1,0 +1,26 @@
+#!/bin/bash
+# Speak text aloud — uses Piper TTS, falls back to espeak-ng under high load
+# Usage: speak "text to say"
+#    or: echo "text" | speak
+
+PIPER_URL="http://127.0.0.1:5030"
+SPEED="${SPEAK_SPEED:-0.5}"
+LOAD_THRESHOLD="${SPEAK_LOAD_THRESHOLD:-6}"  # Fall back to espeak-ng above this 1-min load average
+
+if [ -n "$1" ]; then
+    TEXT="$*"
+else
+    TEXT=$(cat)
+fi
+
+[ -z "$TEXT" ] && exit 0
+
+# Check system load — use espeak-ng if system is stressed or piper is down
+LOAD=$(awk '{printf "%d", $1}' /proc/loadavg)
+if [ "$LOAD" -ge "$LOAD_THRESHOLD" ] || \
+   ! curl -s --max-time 1 "$PIPER_URL" > /dev/null 2>&1; then
+    espeak-ng -s 400 "$TEXT" 2>/dev/null
+else
+    curl -s -N -X POST -d "$TEXT" "${PIPER_URL}?length_scale=${SPEED}" | \
+        aplay -r 22050 -f S16_LE -t raw - 2>/dev/null
+fi
