@@ -15,7 +15,7 @@ Natural text-to-speech for Linux with intelligent fallback.
 ## Quick Install
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/jgreen01/piper-tts-setup.git
 cd piper-tts-setup
 ./install.sh
 ```
@@ -68,3 +68,7 @@ rm ~/.config/systemd/user/piper-tts.service
 rm ~/bin/speak ~/bin/read-clipboard.sh
 systemctl --user daemon-reload
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
